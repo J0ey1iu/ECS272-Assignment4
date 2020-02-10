@@ -14,9 +14,9 @@
     function getData() {
         jQuery.ajax({
             method: "GET",
-            url: "/ajax/test",
+            url: "/ajax/genderRatio",
             success: function(data){
-                alert(data);
+                alert(JSON.stringify(data));
             }
         })
     };

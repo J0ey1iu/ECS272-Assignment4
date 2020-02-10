@@ -18,11 +18,14 @@ def __test__(request):
         {'coef': reg.coef_})
 
 def getGenderRatio(request):
-    df = pd.read_csv(os.path.join(settings.BASE_DIR, 'student-mat.csv'))
-    numbers = [len(df[df.sex == 'F']), len(df[df.sex == 'M'])]
-    labels = ['female', 'male']
-    res = {'numbers': numbers, 'labels': labels}
-    return JsonResponse(res)
+    if not request.is_ajax():
+        raise Http404
+    else:
+        df = pd.read_csv(os.path.join(settings.BASE_DIR, 'student-mat.csv'))
+        numbers = [len(df[df.sex == 'F']), len(df[df.sex == 'M'])]
+        labels = ['female', 'male']
+        res = {'numbers': numbers, 'labels': labels}
+        return JsonResponse(res)
 
 def ajaxTest(request):
     if request.is_ajax():

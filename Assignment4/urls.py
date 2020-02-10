@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from visualization.views import __test__, ajaxTest
+from visualization.views import __test__, ajaxTest, getGenderRatio
 
 urlpatterns = [
     path('', __test__),
-    path('ajax/test', ajaxTest),
+    path('ajax/genderRatio', getGenderRatio),
 ]
