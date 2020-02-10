@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from visualization.views import __test__
+from visualization.views import __test__, getGenderRatio
 
 urlpatterns = [
     path('', __test__),
+    path('getGenderRatio/', getGenderRatio)
 ]

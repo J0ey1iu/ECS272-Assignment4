@@ -2,3 +2,10 @@
     <title> TestPage </title>
 </head>
 <h1> TestPage here</h1>
+<form action="/getGenderRatio/" method="post"> {% csrf_token %}
+    <button type="submit">getGenderRatio</button>
+</form>
+
+{% if GR %}
+    {{ GR }}
+{% endif %}
