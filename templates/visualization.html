@@ -1,0 +1,49 @@
+<head>
+    <title> TestPage </title>
+</head>
+<h1> TestPage here</h1>
+<!-- <form action="/getGenderRatio/" method="post"> {% csrf_token %}
+    <button type="submit">getGenderRatio</button>
+</form> -->
+
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<button onclick="javascript:getClusterData()">getClusterData</button>
+<button onclick="javascript:getSandkeyData()">getSandkeyData</button>
+<button onclick="javascript:getHistData()">getHistData</button>
+
+<script>
+    function getClusterData() {
+        jQuery.ajax({
+            method: "GET",
+            url: "/ajax/cluster",
+            success: function(data){
+                alert("Success");
+            }
+        })
+    };
+</script>
+
+<script>
+    function getSandkeyData() {
+        jQuery.ajax({
+            method: "GET",
+            url: "/ajax/sandkey",
+            success: function(data){
+                alert("Success");
+            }
+        })
+    };
+</script>
+
+<script>
+    function getHistData() {
+        jQuery.ajax({
+            method: "GET",
+            url: "/ajax/histogram",
+            success: function(data){
+                alert("Success");
+            }
+        })
+    };
+</script>

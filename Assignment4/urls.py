@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from visualization.views import __test__, ajaxTest, getGenderRatio
+from visualization.views import __test__, cluster, sandkey, histogram
 
 urlpatterns = [
     path('', __test__),
-    path('ajax/genderRatio', getGenderRatio),
+    path('ajax/cluster', cluster),
+    path('ajax/sandkey', sandkey),
+    path('ajax/histogram', histogram)
 ]
