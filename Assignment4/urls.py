@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from visualization.views import cluster, getk, sandkey, histogram, __test__
+from visualization.views import cluster, sandkey, histogram, __test__, getk
 
 urlpatterns = [
     # path('', index),

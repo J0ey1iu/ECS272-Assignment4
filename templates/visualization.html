@@ -13,6 +13,13 @@
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/sankey.js"></script>
     <script src="http://axc.net/code_libraries/lasso/lasso.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script> 
+    <script> 
+        jQuery(document).ready(function() { 
+            jQuery('#submitK').ajaxForm(function() {}); // need to check empty here
+        }); 
+    </script> 
+
     <style>
         .node rect {
             cursor: move;
@@ -82,7 +89,7 @@
     <div id="sankey"></div>
     <div id="histogram"></div>
 </body>
-<script src="{% static "main.js" %}"></script>
+<script src="{% static 'main.js' %}"></script>
 
 
 </html>
