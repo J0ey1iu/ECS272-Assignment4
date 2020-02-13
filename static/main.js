@@ -1,9 +1,35 @@
 (function () {
-
+    $("#sendk").on('submit', function(){
+        var kval = $("#k").val();
+        jQuery.ajax({
+            type: "POST",
+            url: "ajax/cluster",
+            data: {
+                'k': kval
+            },
+            success: function(result){
+                alert(result);
+            }
+       });
+    })
     drawClusters();
     drawSankey();
+   
 })()
-
+function submit() {
+    $('#sendk').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            url:'ajax/cluster',
+            type:'post',
+            data:$('#k').val(),
+            success:function(data){
+                console.log(data);
+                //whatever you wanna do after the form is successfully submitted
+            }
+        });
+    });
+}
 function drawClusters() {
     var width = 500;
     var height = 500;

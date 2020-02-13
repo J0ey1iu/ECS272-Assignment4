@@ -7,6 +7,8 @@ import os
 from Assignment4 import settings
 
 # Create your views here.
+
+
 def __test__(request):
     return render(request, 'visualization.html')
 
@@ -22,7 +24,7 @@ def __test__(request):
 #     cluster_ret['Attack'] = list(cluster_filtered['Attack'])
 #     cluster_ret['Defense'] = list(cluster_filtered['Defense'])
 #     cluster_ret['Cluster'] = list(cluster_filtered['Cluster'])
-        
+
 #     columns = ['Type_1', 'Generation', 'Color', 'Body_Style']
 #     sandkey_filtered = df.loc[:, columns]
 #     sandkey_filtered = sandkey_filtered.fillna('None')
@@ -43,7 +45,7 @@ def __test__(request):
 #             nodes_.append({
 #                 'id': key
 #             })
-        
+
 #     links = []
 #     for i in range(len(columns)-1):
 #         sources = nodes[i]
@@ -55,7 +57,7 @@ def __test__(request):
 #                     'target': nodes[i+1][k],
 #                     'value': len(sandkey_filtered.loc[(sandkey_filtered[columns[i]] == nodes[i][j]) & (sandkey_filtered[columns[i+1]] == nodes[i+1][k])])
 #                 })
-    
+
 #     sandkey_ret = {'nodes': nodes_, 'links': links}
 
 #     x = [int(v) for v in df['Speed']]
@@ -67,32 +69,42 @@ def __test__(request):
 
 
 def cluster(request):
-    if request.is_ajax():
-        df = pd.read_csv(os.path.join(settings.BASE_DIR, 'pokemon_alopez247.csv'))
-        filtered = df.loc[:, ['Attack', 'Defense']]
-        data = []
-        for i in range(len(filtered)):
-            data.append([filtered['Attack'][i], filtered['Defense'][i]])
-        kmeans = KMeans(n_clusters=4).fit(data)
-        filtered['Cluster'] = kmeans.labels_
-        ret = {}
-        ret['Attack'] = list(filtered['Attack'])
-        ret['Defense'] = list(filtered['Defense'])
-        ret['Cluster'] = list(filtered['Cluster'])
-        return JsonResponse(ret)
+    if request.method == 'GET':
+        k_ = 4
+    elif request.method == 'POST':
+        k = request.POST.get('k', 4)
+        print(k)
+        k_ = int(k)
     else:
         raise Http404
+    df = pd.read_csv(os.path.join(
+        settings.BASE_DIR, 'pokemon_alopez247.csv'))
+    filtered = df.loc[:, ['Attack', 'Defense']]
+    data = []
+    for i in range(len(filtered)):
+        data.append([filtered['Attack'][i], filtered['Defense'][i]])
+    kmeans = KMeans(n_clusters=k_).fit(data)
+    filtered['Cluster'] = kmeans.labels_
+    ret = {}
+    ret['Attack'] = list(filtered['Attack'])
+    ret['Defense'] = list(filtered['Defense'])
+    ret['Cluster'] = list(filtered['Cluster'])
+    return JsonResponse(ret)
+
+
 
 def getk(request):
-    k = request.GET.get('k', None)
+    k = request.POST.get('k', None)
     data = {
-        'success': 0
+        'k': k
     }
     return JsonResponse(data)
 
+
 def sandkey(request):
     if request.is_ajax():
-        df = pd.read_csv(os.path.join(settings.BASE_DIR, 'pokemon_alopez247.csv'))
+        df = pd.read_csv(os.path.join(
+            settings.BASE_DIR, 'pokemon_alopez247.csv'))
         columns = ['Type_1', 'Generation', 'Color', 'Body_Style']
         filtered = df.loc[:, columns]
         filtered = filtered.fillna('None')
@@ -113,7 +125,7 @@ def sandkey(request):
                 nodes_.append({
                     'id': key
                 })
-            
+
         links = []
         for i in range(len(columns)-1):
             sources = nodes[i]
@@ -125,16 +137,18 @@ def sandkey(request):
                         'target': nodes[i+1][k],
                         'value': len(filtered.loc[(filtered[columns[i]] == nodes[i][j]) & (filtered[columns[i+1]] == nodes[i+1][k])])
                     })
-        
+
         ret = {'nodes': nodes_, 'links': links}
-        print(ret)
+        #print(ret)
         return JsonResponse(ret)
     else:
         raise Http404
 
+
 def histogram(request):
     if request.is_ajax():
-        df = pd.read_csv(os.path.join(settings.BASE_DIR, 'pokemon_alopez247.csv'))
+        df = pd.read_csv(os.path.join(
+            settings.BASE_DIR, 'pokemon_alopez247.csv'))
         x = [int(v) for v in df['Speed']]
         ret = {'x': x}
         return JsonResponse(ret)

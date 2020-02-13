@@ -71,7 +71,7 @@
     <button onclick="getHistData()">getHistData</button>
     <div id="scatter">
         <div id="select">
-            <form action="ajax/k" method="post">
+            <form id="sendk">
                 {% csrf_token %}
                 <label for="k">K value:</label>
                 <input type="text" id="k" name="k"><br><br>
@@ -83,5 +83,6 @@
     <div id="histogram"></div>
 </body>
 <script src="{% static "main.js" %}"></script>
+
 
 </html>
