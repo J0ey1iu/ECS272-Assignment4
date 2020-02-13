@@ -27,7 +27,7 @@ function drawClusters() {
             //alert("Success");
             console.log(data);
 
-            K = 4;
+            K = data.K;
             groups = [];
             for (var i = 0; i < K; i++) {
                 var attack = [], defense = [];

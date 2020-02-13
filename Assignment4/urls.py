@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from visualization.views import cluster, sandkey, histogram, __test__
+from visualization.views import cluster, sandkey, histogram, __test__, getk
 
 urlpatterns = [
     # path('', index),
     path('', __test__),
     path('ajax/cluster', cluster),
     path('ajax/sandkey', sandkey),
-    path('ajax/histogram', histogram)
+    path('ajax/histogram', histogram),
+    path('ajax/k', getk)
 ]

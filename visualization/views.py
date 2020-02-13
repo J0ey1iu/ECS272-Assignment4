@@ -70,23 +70,35 @@ def cluster(request):
     if request.is_ajax():
         df = pd.read_csv(os.path.join(settings.BASE_DIR, 'pokemon_alopez247.csv'))
         filtered = df.loc[:, ['Attack', 'Defense']]
+        ret = {}
         data = []
         for i in range(len(filtered)):
             data.append([filtered['Attack'][i], filtered['Defense'][i]])
-        kmeans = KMeans(n_clusters=4).fit(data)
+        kmeans = None
+        if request.method == 'POST':
+            kmeans = KMeans(n_clusters=int(request.POST['k'])).fit(data)
+            ret['K'] = int(request.POST['k'])
+        elif request.method == 'GET':
+            kmeans = KMeans(n_clusters=4).fit(data)
+            ret['K'] = 4
         filtered['Cluster'] = kmeans.labels_
-        ret = {}
         ret['Attack'] = list(filtered['Attack'])
         ret['Defense'] = list(filtered['Defense'])
+        ret['Id'] = list(df['Number'])
+        ret['Name'] = list(df['Name'])
+        ret['Total'] = list(df['Total'])
+        ret['Generation'] = list(df['Generation'])
+        ret['hasGender'] = list(df['hasGender'])
         ret['Cluster'] = list(filtered['Cluster'])
         return JsonResponse(ret)
     else:
         raise Http404
 
 def getk(request):
-    k = request.GET.get('k', None)
+    k = request.POST['k']
     data = {
-        'success': 0
+        'success': 0,
+        'k': k,
     }
     return JsonResponse(data)
 
