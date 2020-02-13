@@ -1,49 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
 <head>
+    <meta charset="utf-8">
     <title> TestPage </title>
-</head>
-<h1> TestPage here</h1>
-<!-- <form action="/getGenderRatio/" method="post"> {% csrf_token %}
+    <!-- <form action="/getGenderRatio/" method="post"> {% csrf_token %}
     <button type="submit">getGenderRatio</button>
 </form> -->
 
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/sankey.js"></script>
+    <script src="http://axc.net/code_libraries/lasso/lasso.min.js"></script>
+    <style>
+        .node rect {
+            cursor: move;
+            fill-opacity: .9;
+            shape-rendering: crispEdges;
+        }
 
-<button onclick="javascript:getClusterData()">getClusterData</button>
-<button onclick="javascript:getSandkeyData()">getSandkeyData</button>
-<button onclick="javascript:getHistData()">getHistData</button>
+        .node text {
+            pointer-events: none;
+            text-shadow: 0 1px 0 #fff;
+        }
 
-<script>
-    function getClusterData() {
-        jQuery.ajax({
-            method: "GET",
-            url: "/ajax/cluster",
-            success: function(data){
-                alert("Success");
-            }
-        })
-    };
-</script>
+        .link {
+            fill: none;
+            stroke: #000;
+            stroke-opacity: .2;
+        }
 
-<script>
-    function getSandkeyData() {
-        jQuery.ajax({
-            method: "GET",
-            url: "/ajax/sandkey",
-            success: function(data){
-                alert("Success");
-            }
-        })
-    };
-</script>
+        .link:hover {
+            stroke-opacity: .5;
+        }
 
-<script>
-    function getHistData() {
-        jQuery.ajax({
-            method: "GET",
-            url: "/ajax/histogram",
-            success: function(data){
-                alert("Success");
-            }
-        })
-    };
-</script>
+        .lasso path {
+            stroke: rgb(80, 80, 80);
+            stroke-width: 2px;
+        }
+
+        .lasso .drawn {
+            fill-opacity: .05;
+        }
+
+        .lasso .loop_close {
+            fill: none;
+            stroke-dasharray: 4, 4;
+        }
+
+        .lasso .origin {
+            fill: #3399FF;
+            fill-opacity: .5;
+        }
+
+        .not_possible {
+            fill: rgb(200, 200, 200);
+        }
+
+        .possible {
+            fill: #EC888C;
+        }
+    </style>
+</head>
+<h1>Interactive Visualization System</h1>
+
+<body>
+    <button id="b" onclick="getClusterData()">getClusterData</button>
+    <button onclick="getSandkeyData()">getSandkeyData</button>
+    <button onclick="getHistData()">getHistData</button>
+    <div id="scatter">
+        <div id="select">
+            <form action="ajax/k" method="post">
+                {% csrf_token %}
+                <label for="k">K value:</label>
+                <input type="text" id="k" name="k"><br><br>
+                <input type="submit" value="Submit">
+              </form>
+        </div>
+    </div>
+    <div id="sankey"></div>
+    <div id="histogram"></div>
+</body>
+<script src="{% static "main.js" %}"></script>
+
+</html>

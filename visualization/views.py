@@ -83,6 +83,13 @@ def cluster(request):
     else:
         raise Http404
 
+def getk(request):
+    k = request.GET.get('k', None)
+    data = {
+        'success': 0
+    }
+    return JsonResponse(data)
+
 def sandkey(request):
     if request.is_ajax():
         df = pd.read_csv(os.path.join(settings.BASE_DIR, 'pokemon_alopez247.csv'))
