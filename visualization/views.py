@@ -92,6 +92,7 @@ def cluster(request):
         ret['Generation'] = list(df['Generation'])
         ret['hasGender'] = list(df['hasGender'])
         ret['Cluster'] = list(filtered['Cluster'])
+        ret['Speed'] = list(df['Speed'])
         return JsonResponse(ret)
     else:
         raise Http404

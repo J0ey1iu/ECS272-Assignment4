@@ -1,5 +1,5 @@
 (function () {
-    $("#sendk").on('submit', function(){
+    $("#sendk").on('submit', function () {
         var kval = $("#k").val();
         jQuery.ajax({
             type: "POST",
@@ -7,23 +7,23 @@
             data: {
                 'k': kval
             },
-            success: function(result){
+            success: function (result) {
                 alert(result);
             }
-       });
+        });
     })
     drawClusters();
+    drawHist();
     drawSankey();
-   
 })()
 function submit() {
-    $('#sendk').submit(function(e){
+    $('#sendk').submit(function (e) {
         e.preventDefault();
         $.ajax({
-            url:'ajax/cluster',
-            type:'post',
-            data:$('#k').val(),
-            success:function(data){
+            url: 'ajax/cluster',
+            type: 'post',
+            data: $('#k').val(),
+            success: function (data) {
                 console.log(data);
                 //whatever you wanna do after the form is successfully submitted
             }
@@ -92,6 +92,7 @@ function drawClusters() {
                 var dot = {
                     x: data.Attack[i],
                     y: data.Defense[i],
+                    speed: data.Speed[i],
                     group: groups[data.Cluster[i]]
                 };
                 dots.push(dot);
@@ -113,6 +114,7 @@ function drawClusters() {
                 .attr('cy', function (d) { return y(d.y); })
                 .attr('data-x', d => d.x)
                 .attr('data-y', d => d.y)
+                .attr('data-speed', d => d.speed)
                 .attr('class', 'circle')
                 .attr('fill', function (d) { return d.group.color; })
                 .attr('opacity', 0.5)
@@ -154,48 +156,170 @@ function drawClusters() {
                 .transition()
                 .duration(500));
 
+            var lasso_start = function () {
+                console.log('start')
+                lasso.items()
+                    .attr("r", 5)
+                    .classed("not_possible", true)
+                    .classed("selected", false);
+            };
 
-/** 
-                var lasso_start = function() {
-                    console.log('start')
-                      lasso.items()
-                          .attr("r",7)
-                          .classed("not_possible",true)
-                          .classed("selected",false);
-                  };
+            var lasso_draw = function () {
+                console.log('draw')
+                lasso.possibleItems()
+                    .classed("not_possible", false)
+                    .classed("possible", true);
+                lasso.notPossibleItems()
+                    .classed("not_possible", true)
+                    .classed("possible", false);
+            };
 
-                  var lasso_draw = function() {
-                    console.log('draw')
-                      lasso.possibleItems()
-                          .classed("not_possible",false)
-                          .classed("possible",true);
-                      lasso.notPossibleItems()
-                          .classed("not_possible",true)
-                          .classed("possible",false);
-                  };
+            var lasso_end = function () {
+                console.log('end')
+                lasso.items()
+                    .classed("not_possible", false)
+                    .classed("possible", false);
+                lasso.selectedItems()
+                    .classed("selected", true)
+                    //.attr('fill', 'orange')
+                    .attr("r", 8);
+                lasso.notSelectedItems()
+                    //.attr('fill', d => d.group.color)
+                    .attr("r", 5);
 
-                  var lasso_end = function() {
-                      console.log('end')
-                      lasso.items()
-                          .classed("not_possible",false)
-                          .classed("possible",false);
-                      lasso.selectedItems()
-                          .classed("selected",true)
-                          .attr("r",7);
-                      lasso.notSelectedItems()
-                          .attr("r",5);
-                  };
-                  console.log(circles);
-                  const lasso = d3.lasso()
-                          .closePathDistance(305)
-                          .closePathSelect(true)
-                          .area(dotg)
-                          .items(circles)
-                          .on("start",lasso_start)
-                          .on("draw",lasso_draw)
-                          .on("end",lasso_end);
-            dotg.call(lasso);
+                var selectedArray = [];
+                var selected = lasso.selectedItems();
+                console.log(selected);
+                selected._groups[0].forEach(function (d) {
+                    selectedArray.push(d3.select(d).data()[0].speed)
+                });
+                console.log(selectedArray);
+                updateHist(selectedArray);
+            };
+            console.log(circles[0]);
+            var s = d3.select("#scatter > svg");
+            var cir = d3.select("#scatter > svg").selectAll("circle");
+            const lasso = d3.lasso()
+                .closePathDistance(305)
+                .closePathSelect(true)
+                .targetArea(svg)
+                .items(circles)
+                .on("start", lasso_start)
+                .on("draw", lasso_draw)
+                .on("end", lasso_end);
+            svg.call(lasso);
+
+
+        }
+    })
+}
+
+function updateHist(newdata) {
+    var width = 500;
+    var height = 500;
+    var margin = { left: 60, right: 60, top: 30, bottom: 0 }
+
+    /* Note that here we only have to select the elements - no more appending! */
+    /*plot.selectAll("rect")
+        .data(newdata)
+        .transition()
+        .duration(750)
+        .attr("x", function (d, i) {
+            return xScale(i);
+        })
+        .attr("width", width / currentDatasetBarChart.length - barPadding)
+        .attr("y", function (d) {
+            return yScale(d.measure);
+        })
+        .attr("height", function (d) {
+            return height - yScale(d.measure);
+        })
+        .attr("fill", colorChosen)
+        ;
 */
+var svg = d3.select("#histogram svg");
+        var x = d3.scaleLinear()
+        .domain([d3.min(newdata), d3.max(newdata)])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+        .range([0, width]);
+
+    // set the parameters for the histogram
+    var histogram = d3.histogram()
+        //.value(data.x)   // I need to give the vector of value
+        .domain(x.domain())  // then the domain of the graphic
+        .thresholds(x.ticks(40)); // then the numbers of bins
+
+    // And apply this function to data to get the bins
+    var bins = histogram(newdata);
+    console.log(bins);
+    // Y axis: scale and draw:
+    var y = d3.scaleLinear()
+        .range([height, 0]);
+    y.domain([0, d3.max(bins, function (d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+
+    // append the bar rectangles to the svg element
+    svg
+        .selectAll("rect")
+        .data(bins)
+        .join("rect")
+        .transition()
+        .duration(750)
+        .attr("x", d => x(d.x0) + 1)
+        .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 1))
+        .attr("y", d => y(d.length))
+        .attr("fill", "orange")
+        .attr("height", d => y(0) - y(d.length));
+}
+
+
+function drawHist() {
+    var width = 500;
+    var height = 500;
+    var margin = { left: 60, right: 60, top: 30, bottom: 0 }
+
+    var svg = d3.select('#histogram')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
+    jQuery.ajax({
+        method: "GET",
+        url: "/ajax/histogram",
+        success: function (data) {
+            console.log(data.x);
+            // X axis: scale and draw:
+            var x = d3.scaleLinear()
+                .domain([d3.min(data.x), d3.max(data.x)])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+            // set the parameters for the histogram
+            var histogram = d3.histogram()
+                //.value(data.x)   // I need to give the vector of value
+                .domain(x.domain())  // then the domain of the graphic
+                .thresholds(x.ticks(40)); // then the numbers of bins
+
+            // And apply this function to data to get the bins
+            var bins = histogram(data.x);
+            console.log(bins);
+            // Y axis: scale and draw:
+            var y = d3.scaleLinear()
+                .range([height, 0]);
+            y.domain([0, d3.max(bins, function (d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+            svg.append("g")
+            //.attr("transform", "translate(" + margin.left + ",0)")
+                .call(d3.axisLeft(y));
+
+            // append the bar rectangles to the svg element
+            svg.append("g")
+                .attr("fill", "orange")
+                .selectAll("rect")
+                .data(bins)
+                .join("rect")
+                .attr("x", d => x(d.x0) + 1)
+                .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 1))
+                .attr("y", d => y(d.length))
+                .attr("height", d => y(0) - y(d.length));
         }
     })
 }
