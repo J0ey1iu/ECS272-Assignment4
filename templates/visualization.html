@@ -98,15 +98,15 @@
 
 <body>
     <button id="b" onclick="getClusterData()">getClusterData</button>
-    <button onclick="getSandkeyData()">getSandkeyData</button>
+    <button onclick="getSankeyData()">getSankeyData</button>
     <button onclick="getHistData()">getHistData</button>
     <div id="scatter">
         <div id="select">
             <form id="sendk">
-                {% csrf_token %}
+                <!-- {% csrf_token %} -->
                 <label for="k">K value:</label>
                 <input type="text" id="k" name="k"><br><br>
-                <input type="submit" value="Submit">
+                <input id="btn" type="button" value="Set K">
             </form>
         </div>
     </div>

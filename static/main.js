@@ -1,5 +1,5 @@
 (function () {
-    $("#sendk").on('submit', function () {
+    $("#btn").on('click', function () {
         var kval = $("#k").val();
         jQuery.ajax({
             type: "POST",
@@ -8,7 +8,8 @@
                 'k': kval
             },
             success: function (result) {
-                alert(result);
+                console.log(result);
+                // alert(result);
             }
         });
     })
@@ -342,7 +343,7 @@ function drawSankey() {
 
     jQuery.ajax({
         method: "GET",
-        url: "/ajax/sandkey",
+        url: "/ajax/sankey",
         success: function (data) {
             //alert(data);
             ids = [];
@@ -440,10 +441,10 @@ function getClusterData() {
     })
 };
 
-function getSandkeyData() {
+function getSankeyData() {
     jQuery.ajax({
         method: "GET",
-        url: "/ajax/sandkey",
+        url: "/ajax/sankey",
         success: function (data) {
             alert("Success");
             console.log(data);
