@@ -29,7 +29,7 @@
 //dimensions for scatter plot
 var width = 500;
 var height = 500;
-var margin = { left: 60, right: 60, top: 30, bottom: 0 }
+var margin = { left: 60, right: 60, top: 30, bottom: 60 }
 
 var svg1 = d3.select('#scatter')
     .append('svg')
@@ -86,6 +86,7 @@ function drawClusters(data) {
         var dot = {
             x: data.Attack[i],
             y: data.Defense[i],
+            name: data.Name[i],
             speed: data.Speed[i],
             group: groups[data.Cluster[i]]
         };
@@ -96,10 +97,37 @@ function drawClusters(data) {
     //draw 
     var x = d3.scaleLinear()
         .domain([0, d3.max(data.Attack)])
-        .range([height, 0]);
+        .range([0, width]);
     var y = d3.scaleLinear()
         .domain([0, d3.max(data.Defense)])
         .range([height, 0]);
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function (d) {
+            return "<strong>Name:</strong> <span style='color:red'>" + d.name + "</span><br><strong>Attack:</strong> <span style='color:red'>" + d.x + "</span><br><strong>Defense:</strong> <span style='color:red'>" + d.y + "</span><br><strong>Speed:</strong> <span style='color:red'>" + d.speed + "</span>";
+        })
+        svg1.append("g")
+        .attr("transform", "translate(60," + (height+50)  + ")")
+        .call(d3.axisBottom(x))                
+        .append("text")
+        .attr("fill", "#000")
+        .attr("x", width)
+        .attr('y', -10)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Attack");
+
+        svg1.append("g")
+        .attr("transform", "translate(10"  + ",40)")
+        .call(d3.axisRight(y))
+        .append("text")
+        .attr("fill", "#000")
+        .attr("x", 0)
+        .attr("y", -5)
+        .text("Defense")
+        .attr("text-anchor", "start");
+
     var circles = dotg.selectAll('circle')
         .data(dots)
         .enter()
@@ -112,8 +140,10 @@ function drawClusters(data) {
         .attr('class', 'circle')
         .attr('fill', function (d) { return d.group.color; })
         .attr('opacity', 0.5)
-        .attr('r', 5);
-
+        .attr('r', 5)
+        .on("mouseover", tip.show)
+        .on("mouseleave", tip.hide);
+    dotg.call(tip);
     if (dots[0].group) {
         var l = lineg.selectAll('line')
             .data(dots);
@@ -211,8 +241,8 @@ function drawClusters(data) {
 }
 
 function updateHist(newdata) {
-    var width = 500;
-    var height = 500;
+    var width = 550;
+    var height = 550;
     var margin = { left: 60, right: 60, top: 30, bottom: 0 }
 
     var svg = d3.select("#histogram svg");
@@ -246,16 +276,16 @@ function updateHist(newdata) {
         .duration(750)
         .attr("x", d => hx(d.x0) + 1)
         .attr("width", d => Math.max(0, hx(d.x1) - hx(d.x0) - 1))
-        .attr("y", d => y(d.length))
+        .attr("y", d => hy(d.length))
         .attr("fill", d => colors(d.length))
-        .attr("height", d => y(0) - y(d.length));
+        .attr("height", d => hy(0) - hy(d.length));
 }
 var hx = d3.scaleLinear();
 var hy = d3.scaleLinear();
 
 function drawHist() {
-    var width = 500;
-    var height = 500;
+    var width = 550;
+    var height = 550;
     var margin = { left: 60, right: 60, top: 30, bottom: 0 }
 
     var svg = d3.select('#histogram')

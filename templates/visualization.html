@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title> TestPage </title>
+    <title> ECS272 InfoVis - Assignment 4 </title>
     <!-- <form action="/getGenderRatio/" method="post"> {% csrf_token %}
     <button type="submit">getGenderRatio</button>
 </form> -->
@@ -49,19 +49,20 @@
 
         #scatter {
             position: absolute;
-            top: 120px;
+            top: 150px;
             left: 10px;
+            min-width: 600;
         }
 
         #histogram {
             position: absolute;
-            top: 120px;
+            top: 150px;
             left: 650px;
         }
 
         #sankey {
             position: absolute;
-            top: 900px;
+            top: 950px;
             left: 45px;
         }
 
@@ -129,12 +130,14 @@
 </head>
 <h1>Interactive Visualization System</h1>
 <h2>Pokemon Dataset</h2>
+<p>Authors: Jiayu Liu, Haitong Li</p>
+
 
 <body>
     <div id="scatter">
         <h3>Clusters of Pokemons</h3>
         <p>K-Means clustering with attributes "Attack" and "Defense"</p>
-        <p>Lasso select on the plot to select data points for the histogram</p>
+        <p>-Lasso select on the plot to select data points for the histogram and hover for details-</p>
         <div id="select">
             <form id="sendk">
                 <!-- {% csrf_token %} -->
@@ -146,7 +149,7 @@
     </div>
     <div id="histogram">
         <h3>Distribution of Selected Pokemons' Speeds</h3>
-        <p>Hover over the bars for details</p>
+        <p>-Hover over the bars for details-</p>
         <br><br><br><br><br>
     </div>
     <div id="sankey">
