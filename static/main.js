@@ -45,7 +45,6 @@ function drawClusters(data) {
         .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
     //get data
 
-    //alert("Success");
     console.log(data);
 
     K = data.K;
@@ -78,7 +77,7 @@ function drawClusters(data) {
             y: g.center.y
         };
         groups.push(g);
-        console.log(g.center.x + " " + g.center.y);
+
     }
 
     dots = [];
@@ -114,7 +113,6 @@ function drawClusters(data) {
         .attr('fill', function (d) { return d.group.color; })
         .attr('opacity', 0.5)
         .attr('r', 5);
-    console.log(circles);
 
     if (dots[0].group) {
         var l = lineg.selectAll('line')
@@ -187,11 +185,11 @@ function drawClusters(data) {
 
         var selectedArray = [];
         var selected = lasso.selectedItems();
-        console.log(selected);
+
         selected._groups[0].forEach(function (d) {
             selectedArray.push(d3.select(d).data()[0].speed)
         });
-        console.log(selectedArray);
+
         if (selectedArray.length == 0) {
             updateHist(data.Speed);
         } else {
@@ -230,7 +228,7 @@ function updateHist(newdata) {
 
     // And apply this function to data to get the bins
     var bins = histogram(newdata);
-    console.log(bins);
+
     // Y axis: scale and draw:
     var y = d3.scaleLinear()
         .range([height, 0]);
@@ -269,7 +267,6 @@ function drawHist() {
         method: "GET",
         url: "/ajax/histogram",
         success: function (data) {
-            console.log(data.x);
 
             // X axis: scale and draw:
             hx
@@ -280,7 +277,7 @@ function drawHist() {
                 .call(d3.axisBottom(hx))
                 .append("text")
                 .attr("fill", "#000")
-                .attr("x", width +50)
+                .attr("x", width + 50)
                 .attr('y', margin.bottom)
                 .attr("dy", "0.71em")
                 .attr("text-anchor", "end")
@@ -294,7 +291,7 @@ function drawHist() {
 
             // And apply this function to data to get the bins
             var bins = histogram(data.x);
-            console.log(bins);
+
             // Y axis: scale and draw:
             hy
                 .range([height, 0])
@@ -313,7 +310,7 @@ function drawHist() {
                 .html(function (d) {
                     return "<strong>Total:</strong> <span style='color:red'>" + d.length + "</span>";
                 })
-                svg.call(tip);
+            svg.call(tip);
             // append the bar rectangles to the svg element
             var bar = svg.append("g")
                 .selectAll("rect")
@@ -366,8 +363,7 @@ function drawSankey() {
             }
 
             // Constructs a new Sankey generator with the default settings.
-            //data.links[0].target = "Fire";
-            console.log(data);
+
             color.domain(ids);
             var nodeMap = {};
             data.nodes.forEach(function (x) { nodeMap[x.id] = x; });
