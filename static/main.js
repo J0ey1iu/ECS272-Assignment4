@@ -367,7 +367,7 @@ function drawHist() {
 }
 
 function drawSankey() {
-    var margin = { left: 60, right: 60, top: 20, bottom: 10 }
+    var margin = { left: 60, right: 60, top: 20, bottom: 30 }
 
     var width = 1200 - margin.left - margin.right;
     var height = 800 - margin.top - margin.bottom;
